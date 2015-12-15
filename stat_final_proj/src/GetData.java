@@ -3,10 +3,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -69,6 +70,7 @@ public class GetData {
 //	  }
 	  
 	  writeData();
+	  getFeatures("1931532264");
 	}
 	
 	public static void writeData() throws IOException {
@@ -79,6 +81,7 @@ public class GetData {
 	    header.append(",");
 	  }
 	  
+	  header.append("\n");
 	  // Write the header to the data file
 	  FileWriter writer = new FileWriter(DATA_FILE, true);
 	  writer.write(header.toString());
@@ -114,16 +117,32 @@ public class GetData {
 
     // Parse the JSON
     JSONObject json = new JSONObject(response.toString());
-    JSONArray participants = json.getJSONArray("participantIdentities");
+    JSONArray participants = json.getJSONArray("participants");
     Iterator<Object> parIter = participants.iterator();
+    List<String> firstTeamChampions = new ArrayList<String>();
+    List<String> secondTeamChampions = new ArrayList<String>();
     while (parIter.hasNext()) {
-      JSONObject participant = ((JSONObject) parIter.next())
-          .getJSONObject("player");
-      String summonerID = "" + participant.getLong("summonerId");
-      if (!summonerQueue.contains(summonerID)) {
-        summonerQueue.add(summonerID);
+      JSONObject participant = (JSONObject) parIter.next();
+      String championID = "" + participant.getLong("championId");
+      String teamID = "" + participant.getLong("teamId");
+      if (teamID.equals("100")) {
+        firstTeamChampions.add(championID);
+      } else if (teamID.equals("200")) {
+        secondTeamChampions.add(championID);
       }
     }
+    FileWriter writer = new FileWriter(DATA_FILE, true);
+    for (String champion : CHAMPIONS) {
+      if (firstTeamChampions.contains(champion)) {
+        writer.write("1");
+      } else if (secondTeamChampions.contains(champion)) {
+        writer.write("-1");
+      } else {
+        writer.write("0");
+      }
+      writer.write(",");
+    }
+    writer.close();
     Thread.sleep(1000);
 	}
 	
