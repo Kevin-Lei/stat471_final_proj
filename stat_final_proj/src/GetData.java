@@ -56,22 +56,7 @@ public class GetData {
 	public static Queue<String> summonerQueue = new LinkedList<String>();
 	
 	public static void main(String args[]) throws IOException, InterruptedException {
-//		String summonerID = "31670053";
-//	  String matchID = "1370173217";
-//	  getMatches(summonerID);
-//	  int numIter = 5;
-//	  for (int i = 0; i < numIter; i++) {
-//	    while (!matchQueue.isEmpty()) {
-//	      getSummoners(matchQueue.poll());
-//	      System.out.println("Finished getting summmoners; index: " + i);
-//	      break;
-//	    }
-//	    while (!summonerQueue.isEmpty()) {
-//	      getMatches(summonerQueue.poll());
-//	      System.out.println("Finished getting matches; index: " + i);
-//	    }
-//	  }
-	  
+			  
 	  Scanner scan = new Scanner(MATCHES_FILE);
 	  List<String> matchesList = new ArrayList<String>();
 	  while (scan.hasNextLine()) {
@@ -79,6 +64,7 @@ public class GetData {
 	  }
 	  
 	  writeData();
+
 //	  int start = 1931532264;
 //	  int end = start + 10000;
 
@@ -95,6 +81,24 @@ public class GetData {
 	      getFeatures(matchesList.get(index));
 	    }
 	  }
+	}
+	
+	public static void populateMatches(int iter) throws IOException, InterruptedException {
+	  String summonerID = "31670053";
+    String matchID = "1370173217";
+    getMatches(summonerID);
+    int numIter = 15;
+    for (int i = 0; i < numIter; i++) {
+      while (!matchQueue.isEmpty()) {
+        getSummoners(matchQueue.poll());
+        System.out.println("Finished getting summmoners; index: " + i);
+        break;
+      }
+      while (!summonerQueue.isEmpty()) {
+        getMatches(summonerQueue.poll());
+        System.out.println("Finished getting matches; index: " + i);
+      }
+    }
 	}
 	
 	public static void writeData() throws IOException {
@@ -474,6 +478,10 @@ public class GetData {
 		StringBuilder urlRequest = new StringBuilder(MATCHLIST_URL);
 		urlRequest.append("" + summonerID);
 		urlRequest.append("?");
+		urlRequest.append("rankedQueues=RANKED_SOLO_5x5,RANKED_TEAM_5x5");
+		urlRequest.append("&");
+		urlRequest.append("seasons=SEASON2015");
+		urlRequest.append("&");
 		urlRequest.append("api_key=" + API_KEY);
 		URL url = new URL(urlRequest.toString());
 		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
