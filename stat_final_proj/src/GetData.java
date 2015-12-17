@@ -101,16 +101,6 @@ public class GetData {
     header.append("vision_support_2,");
     header.append("wards_placed_support_2,");
     
-    // Add in headers for gold / min.
-    String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
-    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
-    for (int i = 1; i < 3; i++) {
-      for (String role : roles) {
-        for (String time : times) {
-          header.append(role + "_" + time + "_" + i + ",");
-        }
-      }
-    }
     
 	  header.append("\n");
 	  // Write the header to the data file
