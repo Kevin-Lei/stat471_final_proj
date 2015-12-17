@@ -281,7 +281,13 @@ public class GetData {
       }
       
       // Parse the JSON for gold/min. data
-      JSONObject goldPerMinute = timeline.getJSONObject("goldPerMinDeltas");
+      JSONObject goldPerMinute = null;
+      try {
+        goldPerMinute = timeline.getJSONObject("goldPerMinDeltas");        
+      } catch (Exception e) {
+        Thread.sleep(1200);
+        return;
+      }
       String zeroToTenGold = "";
       String tenToTwentyGold = "";
       try {
@@ -295,7 +301,13 @@ public class GetData {
 //      String thirtyToEndGold = "" + goldPerMinute.getLong("thirtyToEnd");
       
       // Parse the JSON for creeps/min. data
-      JSONObject creepsPerMinute = timeline.getJSONObject("creepsPerMinDeltas");
+      JSONObject creepsPerMinute = null;
+      try {
+        creepsPerMinute = timeline.getJSONObject("creepsPerMinDeltas");
+      } catch (Exception e) {
+        Thread.sleep(1200);
+        return;
+      }
       String zeroToTenCreeps = "";
       String tenToTwentyCreeps = "";
 //      String twentyToThirtyCreeps = "" + Math.round(creepsPerMinute.getDouble("twentyToThirty")*100.0)/100.0;
