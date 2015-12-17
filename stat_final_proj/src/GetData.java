@@ -78,7 +78,12 @@ public class GetData {
 	    if (!seen.contains(index)) {
 	      seen.add(index);
 	      System.out.println(index);
-	      getFeatures(matchesList.get(index));
+	      try {
+	        getFeatures(matchesList.get(index));
+	      } catch (Exception e) {
+	        e.printStackTrace();
+	        Thread.sleep(1200);
+	      }
 	    }
 	  }
 	}
