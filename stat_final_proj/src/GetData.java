@@ -126,6 +126,8 @@ public class GetData {
       }
     }
 
+    // Add in the header for first blood (0 if team 1, 1 if team 2)
+    header.append("firstBlood" + ",");
     
 	  header.append("\n");
 	  // Write the header to the data file
@@ -202,6 +204,8 @@ public class GetData {
     // Create variables for creeps / min.
     Map<String, String> creepsPerMinMap = new HashMap<String, String>();
     
+    // Create variable for first blood
+    boolean isSecTeamFirstBlood = false;
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
       // Parse the JSON for stats
@@ -272,6 +276,9 @@ public class GetData {
           sight_support_2 = sightWards;
           vision_support_2 = visionWards;
           wards_placed_support_2 = wardsPlaced;
+        }
+        if (firstBlood) {
+          isSecTeamFirstBlood = true;
         }
       }
       // Put the gold per minute data into the map
@@ -374,6 +381,12 @@ public class GetData {
       }
     }
 
+    // Write the first blood to the output file
+    if (isSecTeamFirstBlood) {
+      writer.write("1" + ",");
+    } else {
+      writer.write("0" + ",");
+    }
     
     writer.close();
     Thread.sleep(1000);
