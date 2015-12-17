@@ -129,7 +129,19 @@ public class GetData {
     // Add in the header for first blood (0 if team 1, 1 if team 2)
     header.append("firstBlood" + ",");
     
+    // Add in the header for wards killed
+    header.append("wards_killed_jungle_1,");
+    header.append("wards_killed_support_1,");
+    
+    header.append("wards_killed_jungle_2,");
+    header.append("wards_killed_support_2,");
+    
+    // Add in the header for neutral minions killed by the JUNGLE role
+    header.append("neutral_jungle_1,");
+    header.append("neutral_jungle_2");
+    
 	  header.append("\n");
+	  
 	  // Write the header to the data file
 	  FileWriter writer = new FileWriter(DATA_FILE, true);
 	  writer.write(header.toString());
@@ -206,6 +218,18 @@ public class GetData {
     
     // Create variable for first blood
     boolean isSecTeamFirstBlood = false;
+    
+    // Create variables for wards killed
+    String wards_killed_jungle_1 = "";
+    String wards_killed_support_1 = "";
+
+    String wards_killed_jungle_2 = "";
+    String wards_killed_support_2 = "";
+
+    // Create variables for neutral minions killed by the JUNGLE role
+    String neutral_jungle_1 = "";
+    String neutral_jungle_2 = "";
+    
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
       // Parse the JSON for stats
@@ -258,10 +282,13 @@ public class GetData {
           sight_jungle_1 = sightWards;
           vision_jungle_1 = visionWards;
           wards_placed_jungle_1 = wardsPlaced;
+          wards_killed_jungle_1 = wardsKilled;
+          neutral_jungle_1 = neutralMinionsKilled;
         } else if (finalRole.equals("DUO_SUPPORT")) {
           sight_support_1 = sightWards;
           vision_support_1 = visionWards;
           wards_placed_support_1 = wardsPlaced;
+          wards_killed_support_1 = wardsKilled;
         }
       } else if (teamID.equals("200")) {
         i = 2;
@@ -272,10 +299,13 @@ public class GetData {
           sight_jungle_2 = sightWards;
           vision_jungle_2 = visionWards;
           wards_placed_jungle_2 = wardsPlaced;
+          wards_killed_jungle_2 = wardsKilled;
+          neutral_jungle_2 = neutralMinionsKilled;
         } else if (finalRole.equals("DUO_SUPPORT")) {
           sight_support_2 = sightWards;
           vision_support_2 = visionWards;
           wards_placed_support_2 = wardsPlaced;
+          wards_killed_support_2 = wardsKilled;
         }
         if (firstBlood) {
           isSecTeamFirstBlood = true;
@@ -387,6 +417,17 @@ public class GetData {
     } else {
       writer.write("0" + ",");
     }
+    
+    // Write the wards killed to the output file
+    writer.write(wards_killed_jungle_1 + ",");
+    writer.write(wards_killed_support_1 + ",");    
+    
+    writer.write(wards_killed_jungle_2 + ",");
+    writer.write(wards_killed_support_2 + ",");    
+    
+    // Write the neutral minions killed to the output file
+    writer.write(neutral_jungle_1 + ",");
+    writer.write(neutral_jungle_2);
     
     writer.close();
     Thread.sleep(1000);
