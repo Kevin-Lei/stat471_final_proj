@@ -76,12 +76,42 @@ public class GetData {
 	public static void writeData() throws IOException {
 	  // Create the header String
 	  StringBuilder header = new StringBuilder();
+	  // Add in headers for championIDs
 	  for (String champion : CHAMPIONS) {
 	    header.append("championId_" + champion);
 	    header.append(",");
 	  }
+	  // Add in headers for tiers (e.g. bronze, silver, gold)
 	  header.append("tier_1,");
 	  header.append("tier_2,");
+	  // Add in headers for wards placed (both Support and Jungle)
+	  header.append("sight_jungle_1,");
+	  header.append("vision_jungle_1,");
+	  header.append("wards_placed_jungle_1,");
+	  
+	  header.append("sight_support_1,");
+    header.append("vision_support_1,");
+    header.append("wards_placed_support_1,");
+    
+    header.append("sight_jungle_2,");
+    header.append("vision_jungle_2,");
+    header.append("wards_placed_jungle_2,");
+    
+    header.append("sight_support_2,");
+    header.append("vision_support_2,");
+    header.append("wards_placed_support_2,");
+    
+    // Add in headers for gold / min.
+    String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
+    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
+    for (int i = 1; i < 3; i++) {
+      for (String role : roles) {
+        for (String time : times) {
+          header.append(role + "_" + time + "_" + i + ",");
+        }
+      }
+    }
+    
 	  header.append("\n");
 	  // Write the header to the data file
 	  FileWriter writer = new FileWriter(DATA_FILE, true);
@@ -133,6 +163,24 @@ public class GetData {
     
     List<String> firstTeamTier = new ArrayList<String>();
     List<String> secondTeamTier = new ArrayList<String>();
+    
+    // Create variables for wards created
+    String sight_jungle_1 = "";
+    String vision_jungle_1 = "";
+    String wards_placed_jungle_1 = "";
+    
+    String sight_support_1 = "";
+    String vision_support_1 = "";
+    String wards_placed_support_1 = "";
+    
+    String sight_jungle_2 = "";
+    String vision_jungle_2 = "";
+    String wards_placed_jungle_2 = "";
+    
+    String sight_support_2 = "";
+    String vision_support_2 = "";
+    String wards_placed_support_2 = "";
+    
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
       // Parse the JSON for stats
@@ -142,6 +190,8 @@ public class GetData {
       String wardsPlaced = "" + stats.getLong("wardsPlaced");
       String wardsKilled = "" + stats.getLong("wardsKilled");
       boolean firstBlood = stats.getBoolean("firstBloodKill");
+      String neutralMinionsKilled = "" + stats.getLong("neutralMinionsKilled");
+      
       // Parse the JSON for timeline
       JSONObject timeline = participant.getJSONObject("timeline");
       String lane = timeline.getString("lane");
@@ -156,22 +206,49 @@ public class GetData {
       
       // Parse the JSON for gold/min. data
       JSONObject goldPerMinute = timeline.getJSONObject("goldPerMinDeltas");
-      String zeroToTen = "" + goldPerMinute.getLong("zeroToTen");
-      String tenToTwenty = "" + goldPerMinute.getLong("tenToTwenty");
-      String twentyToThirty = "" + goldPerMinute.getLong("twentyToThirty");
-      String thirtyToEnd = "" + goldPerMinute.getLong("thirtyToEnd");
+      String zeroToTenGold = "" + goldPerMinute.getLong("zeroToTen");
+      String tenToTwentyGold = "" + goldPerMinute.getLong("tenToTwenty");
+      String twentyToThirtyGold = "" + goldPerMinute.getLong("twentyToThirty");
+      String thirtyToEndGold = "" + goldPerMinute.getLong("thirtyToEnd");
+      
+      // Parse the JSON for creeps/min. data
+      JSONObject creepsPerMinute = timeline.getJSONObject("creepsPerMinDeltas");
+      String zeroToTenCreeps = "" + creepsPerMinute.getLong("zeroToTen");
+      String tenToTwentyCreeps = "" + creepsPerMinute.getLong("tenToTwenty");
+      String twentyToThirtyCreeps = "" + creepsPerMinute.getLong("twentyToThirty");
+      String thirtyToEndCreeps = "" + creepsPerMinute.getLong("thirtyToEnd");
       
       // Parse the JSON for championId data
       String championID = "" + participant.getLong("championId");
       String teamID = "" + participant.getLong("teamId");
       // Parse the JSON for Tier data
       String tier = participant.getString("highestAchievedSeasonTier");
+      
       if (teamID.equals("100")) {
         firstTeamChampions.add(championID);
         firstTeamTier.add(tier);
+        if (finalRole.equals("JUNGLE")) {
+          sight_jungle_1 = sightWards;
+          vision_jungle_1 = visionWards;
+          wards_placed_jungle_1 = wardsPlaced;
+        } else if (finalRole.equals("DUO_SUPPORT")) {
+          sight_support_1 = sightWards;
+          vision_support_1 = visionWards;
+          wards_placed_support_1 = wardsPlaced;
+        }
       } else if (teamID.equals("200")) {
         secondTeamChampions.add(championID);
         secondTeamTier.add(tier);
+        
+        if (finalRole.equals("JUNGLE")) {
+          sight_jungle_2 = sightWards;
+          vision_jungle_2 = visionWards;
+          wards_placed_jungle_2 = wardsPlaced;
+        } else if (finalRole.equals("DUO_SUPPORT")) {
+          sight_support_2 = sightWards;
+          vision_support_2 = visionWards;
+          wards_placed_support_2 = wardsPlaced;
+        }
       }
     }
     FileWriter writer = new FileWriter(DATA_FILE, true);
@@ -222,7 +299,22 @@ public class GetData {
     writer.write("" + firstTotalTier + ",");
     writer.write("" + secondTotalTier + ",");
     
-    
+    // Write the ward data to the output file
+    writer.write(sight_jungle_1 + ",");
+    writer.write(vision_jungle_1 + ",");
+    writer.write(wards_placed_jungle_1 + ",");
+
+    writer.write(sight_support_1 + ",");
+    writer.write(vision_support_1 + ",");
+    writer.write(wards_placed_support_1 + ",");
+
+    writer.write(sight_jungle_2 + ",");
+    writer.write(vision_jungle_2 + ",");
+    writer.write(wards_placed_jungle_2 + ",");
+
+    writer.write(sight_support_2 + ",");
+    writer.write(vision_support_2 + ",");
+    writer.write(wards_placed_support_2 + ",");
     
     writer.close();
     Thread.sleep(1000);
