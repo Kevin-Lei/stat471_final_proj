@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -71,12 +72,28 @@ public class GetData {
 //	    }
 //	  }
 	  
+	  Scanner scan = new Scanner(MATCHES_FILE);
+	  List<String> matchesList = new ArrayList<String>();
+	  while (scan.hasNextLine()) {
+	    matchesList.add(scan.nextLine());
+	  }
+	  
 	  writeData();
-	  int start = 1931532264;
-	  int end = start + 10;
-	  for (int i = start; i < end; i++) {
-	    System.out.println(i);
-	    getFeatures("" + i);
+//	  int start = 1931532264;
+//	  int end = start + 10000;
+
+	  int start = 0;
+	  int end = matchesList.size();
+	  int diff = end - start;
+	  int iter = 10000;
+	  List<Integer> seen = new ArrayList<Integer>();
+	  for (int i = 0; i < iter; i++) {
+	    int index = start + (int) (Math.random() * diff);
+	    if (!seen.contains(index)) {
+	      seen.add(index);
+	      System.out.println(index);
+	      getFeatures(matchesList.get(index));
+	    }
 	  }
 	}
 	
@@ -165,6 +182,8 @@ public class GetData {
     
     int responseCode = conn.getResponseCode();
     if (responseCode != 200) {
+      System.out.println(responseCode);
+      Thread.sleep(1200);
       return;
     }
     
@@ -185,6 +204,7 @@ public class GetData {
     String queueType = json.getString("queueType");
     if (!season.equals("SEASON2015") || !(queueType.equals("RANKED_SOLO_5x5") 
         || queueType.equals("RANKED_TEAM_5x5"))) {
+      Thread.sleep(1200);
       return;
     }
     
@@ -258,17 +278,31 @@ public class GetData {
       
       // Parse the JSON for gold/min. data
       JSONObject goldPerMinute = timeline.getJSONObject("goldPerMinDeltas");
-      String zeroToTenGold = "" + goldPerMinute.getLong("zeroToTen");
-      String tenToTwentyGold = "" + goldPerMinute.getLong("tenToTwenty");
+      String zeroToTenGold = "";
+      String tenToTwentyGold = "";
+      try {
+        zeroToTenGold = "" + goldPerMinute.getLong("zeroToTen");
+        tenToTwentyGold = "" + goldPerMinute.getLong("tenToTwenty");        
+      } catch (Exception e) {
+        Thread.sleep(1200);
+        return;
+      }
 //      String twentyToThirtyGold = "" + goldPerMinute.getLong("twentyToThirty");
 //      String thirtyToEndGold = "" + goldPerMinute.getLong("thirtyToEnd");
       
       // Parse the JSON for creeps/min. data
       JSONObject creepsPerMinute = timeline.getJSONObject("creepsPerMinDeltas");
-      String zeroToTenCreeps = "" + Math.round(creepsPerMinute.getDouble("zeroToTen")*100.0)/100.0;
-      String tenToTwentyCreeps = "" + Math.round(creepsPerMinute.getDouble("tenToTwenty")*100.0)/100.0;
+      String zeroToTenCreeps = "";
+      String tenToTwentyCreeps = "";
 //      String twentyToThirtyCreeps = "" + Math.round(creepsPerMinute.getDouble("twentyToThirty")*100.0)/100.0;
 //      String thirtyToEndCreeps = "" + Math.round(creepsPerMinute.getDouble("thirtyToEnd")*100.0)/100.0;
+      try {
+        zeroToTenCreeps = "" + Math.round(creepsPerMinute.getDouble("zeroToTen")*100.0)/100.0;
+        tenToTwentyCreeps = "" + Math.round(creepsPerMinute.getDouble("tenToTwenty")*100.0)/100.0;
+      } catch (Exception e) {
+        Thread.sleep(1200);
+        return;
+      }
       
       // Parse the JSON for championId data
       String championID = "" + participant.getLong("championId");
@@ -432,7 +466,7 @@ public class GetData {
     
     writer.write("\n");
     writer.close();
-    Thread.sleep(1000);
+    Thread.sleep(1200);
 	}
 	
 	public static void getMatches(String summonerID) throws IOException, InterruptedException {
@@ -477,7 +511,7 @@ public class GetData {
 		  matchQueue.add(matchID);
 		}
 		writer.close();
-		Thread.sleep(1000);
+		Thread.sleep(1200);
 	}
 	
 	public static void getSummoners(String matchID) throws IOException, InterruptedException {
