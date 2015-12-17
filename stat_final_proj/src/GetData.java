@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -101,6 +103,16 @@ public class GetData {
     header.append("vision_support_2,");
     header.append("wards_placed_support_2,");
     
+    // Add in headers for gold / min.
+    String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
+    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
+    for (int i = 1; i < 3; i++) {
+      for (String role : roles) {
+        for (String time : times) {
+          header.append(role + "_" + time + "_" + i + ",");
+        }
+      }
+    }
     
 	  header.append("\n");
 	  // Write the header to the data file
@@ -170,6 +182,9 @@ public class GetData {
     String sight_support_2 = "";
     String vision_support_2 = "";
     String wards_placed_support_2 = "";
+
+    // Create variables for gold / min.
+    Map<String, String> goldPerMinMap = new HashMap<String, String>();
     
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
@@ -214,7 +229,9 @@ public class GetData {
       // Parse the JSON for Tier data
       String tier = participant.getString("highestAchievedSeasonTier");
       
+      int i = 0;
       if (teamID.equals("100")) {
+        i = 1;
         firstTeamChampions.add(championID);
         firstTeamTier.add(tier);
         if (finalRole.equals("JUNGLE")) {
@@ -227,6 +244,7 @@ public class GetData {
           wards_placed_support_1 = wardsPlaced;
         }
       } else if (teamID.equals("200")) {
+        i = 2;
         secondTeamChampions.add(championID);
         secondTeamTier.add(tier);
         
@@ -240,6 +258,11 @@ public class GetData {
           wards_placed_support_2 = wardsPlaced;
         }
       }
+      // Put the gold per minute data into the map
+      goldPerMinMap.put(finalRole + "_" + "zeroToTen" + "_" + i, zeroToTenGold);
+      goldPerMinMap.put(finalRole + "_" + "tenToTwenty" + "_" + i, tenToTwentyGold);
+      goldPerMinMap.put(finalRole + "_" + "twentyToThirty" + "_" + i, twentyToThirtyGold);
+      goldPerMinMap.put(finalRole + "_" + "thirtyToEnd" + "_" + i, thirtyToEndGold);
     }
     FileWriter writer = new FileWriter(DATA_FILE, true);
     // Write the champion data to the file
@@ -305,6 +328,17 @@ public class GetData {
     writer.write(sight_support_2 + ",");
     writer.write(vision_support_2 + ",");
     writer.write(wards_placed_support_2 + ",");
+    
+    // Write the gold/min. data to the output file
+    String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
+    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
+    for (int i = 1; i < 3; i++) {
+      for (String role : roles) {
+        for (String time : times) {
+          writer.write(goldPerMinMap.get(role + "_" + time + "_" + i) + ",");
+        }
+      }
+    }    
     
     writer.close();
     Thread.sleep(1000);
