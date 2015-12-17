@@ -118,6 +118,14 @@ public class GetData {
 
     // Parse the JSON
     JSONObject json = new JSONObject(response.toString());
+    // Ensure that the match is from SEASON2015 and Ranked 5x5
+    String season = json.getString("season");
+    String queueType = json.getString("queueType");
+    if (!season.equals("SEASON2015") || !(queueType.equals("RANKED_SOLO_5x5") 
+        || queueType.equals("RANKED_TEAM_5x5"))) {
+      return;
+    }
+    
     JSONArray participants = json.getJSONArray("participants");
     Iterator<Object> parIter = participants.iterator();
     List<String> firstTeamChampions = new ArrayList<String>();
@@ -127,6 +135,32 @@ public class GetData {
     List<String> secondTeamTier = new ArrayList<String>();
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
+      // Parse the JSON for stats
+      JSONObject stats = participant.getJSONObject("stats");
+      String visionWards = "" + stats.getLong("visionWardsBoughtInGame");
+      String sightWards = "" + stats.getLong("sightWardsBoughtInGame");
+      String wardsPlaced = "" + stats.getLong("wardsPlaced");
+      String wardsKilled = "" + stats.getLong("wardsKilled");
+      boolean firstBlood = stats.getBoolean("firstBloodKill");
+      // Parse the JSON for timeline
+      JSONObject timeline = participant.getJSONObject("timeline");
+      String lane = timeline.getString("lane");
+      String role = timeline.getString("role");
+      // Aggregate the lane and role data
+      String finalRole = "";
+      if (role.equals("DUO_CARRY") || role.equals("DUO_SUPPORT")) {
+        finalRole = role; // Covers DUO_CARRY and DUO_SUPPORT
+      } else {
+        finalRole = lane; // Covers TOP, MIDDLE, and JUNGLE
+      }
+      
+      // Parse the JSON for gold/min. data
+      JSONObject goldPerMinute = timeline.getJSONObject("goldPerMinDeltas");
+      String zeroToTen = "" + goldPerMinute.getLong("zeroToTen");
+      String tenToTwenty = "" + goldPerMinute.getLong("tenToTwenty");
+      String twentyToThirty = "" + goldPerMinute.getLong("twentyToThirty");
+      String thirtyToEnd = "" + goldPerMinute.getLong("thirtyToEnd");
+      
       // Parse the JSON for championId data
       String championID = "" + participant.getLong("championId");
       String teamID = "" + participant.getLong("teamId");
@@ -187,6 +221,9 @@ public class GetData {
     }
     writer.write("" + firstTotalTier + ",");
     writer.write("" + secondTotalTier + ",");
+    
+    
+    
     writer.close();
     Thread.sleep(1000);
 	}
