@@ -105,14 +105,27 @@ public class GetData {
     
     // Add in headers for gold / min.
     String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
-    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
+    String[] timesGold = { "zeroToTenGold", "tenToTwentyGold", 
+        "twentyToThirtyGold", "thirtyToEndGold" };
     for (int i = 1; i < 3; i++) {
       for (String role : roles) {
-        for (String time : times) {
+        for (String time : timesGold) {
           header.append(role + "_" + time + "_" + i + ",");
         }
       }
     }
+    
+    // Add in headers for creeps / min.
+    String[] timesCreeps = { "zeroToTenCreeps", "tenToTwentyCreeps", 
+        "twentyToThirtyCreeps", "thirtyToEndCreeps" };
+    for (int i = 1; i < 3; i++) {
+      for (String role : roles) {
+        for (String time : timesCreeps) {
+          header.append(role + "_" + time + "_" + i + ",");
+        }
+      }
+    }
+
     
 	  header.append("\n");
 	  // Write the header to the data file
@@ -186,6 +199,9 @@ public class GetData {
     // Create variables for gold / min.
     Map<String, String> goldPerMinMap = new HashMap<String, String>();
     
+    // Create variables for creeps / min.
+    Map<String, String> creepsPerMinMap = new HashMap<String, String>();
+    
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
       // Parse the JSON for stats
@@ -218,10 +234,10 @@ public class GetData {
       
       // Parse the JSON for creeps/min. data
       JSONObject creepsPerMinute = timeline.getJSONObject("creepsPerMinDeltas");
-      String zeroToTenCreeps = "" + creepsPerMinute.getLong("zeroToTen");
-      String tenToTwentyCreeps = "" + creepsPerMinute.getLong("tenToTwenty");
-      String twentyToThirtyCreeps = "" + creepsPerMinute.getLong("twentyToThirty");
-      String thirtyToEndCreeps = "" + creepsPerMinute.getLong("thirtyToEnd");
+      String zeroToTenCreeps = "" + Math.round(creepsPerMinute.getDouble("zeroToTen")*100.0)/100.0;
+      String tenToTwentyCreeps = "" + Math.round(creepsPerMinute.getDouble("tenToTwenty")*100.0)/100.0;
+      String twentyToThirtyCreeps = "" + Math.round(creepsPerMinute.getDouble("twentyToThirty")*100.0)/100.0;
+      String thirtyToEndCreeps = "" + Math.round(creepsPerMinute.getDouble("thirtyToEnd")*100.0)/100.0;
       
       // Parse the JSON for championId data
       String championID = "" + participant.getLong("championId");
@@ -259,10 +275,16 @@ public class GetData {
         }
       }
       // Put the gold per minute data into the map
-      goldPerMinMap.put(finalRole + "_" + "zeroToTen" + "_" + i, zeroToTenGold);
-      goldPerMinMap.put(finalRole + "_" + "tenToTwenty" + "_" + i, tenToTwentyGold);
-      goldPerMinMap.put(finalRole + "_" + "twentyToThirty" + "_" + i, twentyToThirtyGold);
-      goldPerMinMap.put(finalRole + "_" + "thirtyToEnd" + "_" + i, thirtyToEndGold);
+      goldPerMinMap.put(finalRole + "_" + "zeroToTenGold" + "_" + i, zeroToTenGold);
+      goldPerMinMap.put(finalRole + "_" + "tenToTwentyGold" + "_" + i, tenToTwentyGold);
+      goldPerMinMap.put(finalRole + "_" + "twentyToThirtyGold" + "_" + i, twentyToThirtyGold);
+      goldPerMinMap.put(finalRole + "_" + "thirtyToEndGold" + "_" + i, thirtyToEndGold);
+      
+      // Put the creeps per minute data into the map
+      creepsPerMinMap.put(finalRole + "_" + "zeroToTenCreeps" + "_" + i, zeroToTenCreeps);
+      creepsPerMinMap.put(finalRole + "_" + "tenToTwentyCreeps" + "_" + i, tenToTwentyCreeps);
+      creepsPerMinMap.put(finalRole + "_" + "twentyToThirtyCreeps" + "_" + i, twentyToThirtyCreeps);
+      creepsPerMinMap.put(finalRole + "_" + "thirtyToEndCreeps" + "_" + i, thirtyToEndCreeps);
     }
     FileWriter writer = new FileWriter(DATA_FILE, true);
     // Write the champion data to the file
@@ -331,14 +353,27 @@ public class GetData {
     
     // Write the gold/min. data to the output file
     String[] roles = { "TOP", "MIDDLE", "JUNGLE", "DUO_CARRY", "DUO_SUPPORT" };
-    String[] times = { "zeroToTen", "tenToTwenty", "twentyToThirty", "thirtyToEnd" };
+    String[] timesGold = { "zeroToTenGold", "tenToTwentyGold", 
+        "twentyToThirtyGold", "thirtyToEndGold" };
     for (int i = 1; i < 3; i++) {
       for (String role : roles) {
-        for (String time : times) {
+        for (String time : timesGold) {
           writer.write(goldPerMinMap.get(role + "_" + time + "_" + i) + ",");
         }
       }
-    }    
+    }
+    
+    // Write the creeps/min. data to the output file
+    String[] timesCreeps = { "zeroToTenCreeps", "tenToTwentyCreeps", 
+        "twentyToThirtyCreeps", "thirtyToEndCreeps" };
+    for (int i = 1; i < 3; i++) {
+      for (String role : roles) {
+        for (String time : timesCreeps) {
+          writer.write(creepsPerMinMap.get(role + "_" + time + "_" + i) + ",");
+        }
+      }
+    }
+
     
     writer.close();
     Thread.sleep(1000);
