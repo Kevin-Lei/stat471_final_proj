@@ -23,7 +23,7 @@ import org.json.JSONObject;
  * Reference: http://loldevelopers.de.vu/
  *            https://developer.riotgames.com/api/
  * 
- * @author Kevin
+ * @author Kevin Lei
  *
  */
 public class GetData {
@@ -80,7 +80,8 @@ public class GetData {
 	    header.append("championId_" + champion);
 	    header.append(",");
 	  }
-	  
+	  header.append("tier_1,");
+	  header.append("tier_2,");
 	  header.append("\n");
 	  // Write the header to the data file
 	  FileWriter writer = new FileWriter(DATA_FILE, true);
@@ -121,17 +122,26 @@ public class GetData {
     Iterator<Object> parIter = participants.iterator();
     List<String> firstTeamChampions = new ArrayList<String>();
     List<String> secondTeamChampions = new ArrayList<String>();
+    
+    List<String> firstTeamTier = new ArrayList<String>();
+    List<String> secondTeamTier = new ArrayList<String>();
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
+      // Parse the JSON for championId data
       String championID = "" + participant.getLong("championId");
       String teamID = "" + participant.getLong("teamId");
+      // Parse the JSON for Tier data
+      String tier = participant.getString("highestAchievedSeasonTier");
       if (teamID.equals("100")) {
         firstTeamChampions.add(championID);
+        firstTeamTier.add(tier);
       } else if (teamID.equals("200")) {
         secondTeamChampions.add(championID);
+        secondTeamTier.add(tier);
       }
     }
     FileWriter writer = new FileWriter(DATA_FILE, true);
+    // Write the champion data to the file
     for (String champion : CHAMPIONS) {
       if (firstTeamChampions.contains(champion)) {
         writer.write("1");
@@ -142,6 +152,41 @@ public class GetData {
       }
       writer.write(",");
     }
+    // Calculate the total tier score for each team
+    int firstTotalTier = 0;
+    for (String t : firstTeamTier) {
+      if (t.equals("UNRANKED")) {
+        firstTotalTier += 0;
+      } else if (t.equals("BRONZE")) {
+        firstTotalTier += 1;
+      } else if (t.equals("SILVER")) {
+        firstTotalTier += 2;
+      } else if (t.equals("GOLD")) {
+        firstTotalTier += 3;
+      } else if (t.equals("PLATINUM")) {
+        firstTotalTier += 4;
+      } else if (t.equals("CHALLENGER")) {
+        firstTotalTier += 5;
+      }
+    }
+    int secondTotalTier = 0;
+    for (String t : secondTeamTier) {
+      if (t.equals("UNRANKED")) {
+        secondTotalTier += 0;
+      } else if (t.equals("BRONZE")) {
+        secondTotalTier += 1;
+      } else if (t.equals("SILVER")) {
+        secondTotalTier += 2;
+      } else if (t.equals("GOLD")) {
+        secondTotalTier += 3;
+      } else if (t.equals("PLATINUM")) {
+        secondTotalTier += 4;
+      } else if (t.equals("CHALLENGER")) {
+        secondTotalTier += 5;
+      }
+    }
+    writer.write("" + firstTotalTier + ",");
+    writer.write("" + secondTotalTier + ",");
     writer.close();
     Thread.sleep(1000);
 	}
