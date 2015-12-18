@@ -64,14 +64,15 @@ public class GetData {
 	  }
 	  
 	  writeData();
-
+//	  getFeatures("1931532264");
+	  
 //	  int start = 1931532264;
 //	  int end = start + 10000;
 
 	  int start = 0;
 	  int end = matchesList.size();
 	  int diff = end - start;
-	  int iter = 10000;
+	  int iter = 10;
 	  List<Integer> seen = new ArrayList<Integer>();
 	  for (int i = 0; i < iter; i++) {
 	    int index = start + (int) (Math.random() * diff);
@@ -167,7 +168,18 @@ public class GetData {
     
     // Add in the header for neutral minions killed by the JUNGLE role
     header.append("neutral_jungle_1,");
-    header.append("neutral_jungle_2");
+    header.append("neutral_jungle_2,");
+    
+    // Add in the header for dragon kills
+    header.append("dragon_1,");
+    header.append("dragon_2,");
+    
+    // Add in the header for baron kills
+    header.append("baron_1,");
+    header.append("baron_2,");
+    
+    // Add in the header for which team won (0 if team 1; 1 if team 2)
+    header.append("winner");
     
 	  header.append("\n");
 	  
@@ -261,6 +273,26 @@ public class GetData {
     // Create variables for neutral minions killed by the JUNGLE role
     String neutral_jungle_1 = "";
     String neutral_jungle_2 = "";
+    
+    // Create variables for number of dragon kills
+    JSONArray teams = json.getJSONArray("teams");
+    JSONObject team_1 = teams.getJSONObject(0);
+    JSONObject team_2 = teams.getJSONObject(1);
+    
+    String dragon_1 = "" + team_1.getLong("dragonKills");
+    String dragon_2 = "" + team_2.getLong("dragonKills");
+    
+    // Create variables for number of baron kills
+    String baron_1 = "" + team_1.getLong("baronKills");
+    String baron_2 = "" + team_2.getLong("baronKills");
+    
+    // Create variable for winner
+    String winner = "";
+    if (team_1.getBoolean("winner")) {
+      winner = "0";
+    } else {
+      winner = "1";
+    }
     
     while (parIter.hasNext()) {
       JSONObject participant = (JSONObject) parIter.next();
@@ -483,7 +515,17 @@ public class GetData {
     
     // Write the neutral minions killed to the output file
     writer.write(neutral_jungle_1 + ",");
-    writer.write(neutral_jungle_2);
+    writer.write(neutral_jungle_2 + ",");
+    
+    writer.write(dragon_1 + ",");
+    writer.write(dragon_2 + ",");
+    
+    // Create variables for number of baron kills
+    writer.write(baron_1 + ",");
+    writer.write(baron_2 + ",");
+    
+    // Create variable for winner
+    writer.write(winner);
     
     writer.write("\n");
     writer.close();
