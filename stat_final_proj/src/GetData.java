@@ -72,7 +72,7 @@ public class GetData {
 	  int start = 0;
 	  int end = matchesList.size();
 	  int diff = end - start;
-	  int iter = 10;
+	  int iter = 15000;
 	  List<Integer> seen = new ArrayList<Integer>();
 	  for (int i = 0; i < iter; i++) {
 	    int index = start + (int) (Math.random() * diff);
