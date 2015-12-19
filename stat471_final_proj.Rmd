@@ -42,4 +42,83 @@ set.seed(37)
 lol_data <- read.csv("new_lol_data.csv", header=T, stringsAsFactors=T, as.is=T, 
                    na.strings="")
 lol_data = na.omit(lol_data)
+
+data_champs <- read.csv("data_champs.csv", header=T, stringsAsFactors=T, as.is=T, 
+                   na.strings="")
+
+data_stats <- read.csv("data_stats.csv", header=T, stringsAsFactors=T, as.is=T, 
+                   na.strings="")
 ```
+
+# Data Overview
+
+```{r champions, include=FALSE}
+
+pos = abs(data_champs)
+pos_sums = colSums(pos)
+names(pos_sums) = names(pos)
+
+hist(pos_sums, main="Histogram of Number of Champion Plays", xlab="Number of Champion Plays", ylab="Frequency", breaks=20, cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+
+```
+
+
+```{r minion_jungle=FALSE}
+Top_MPM_0_10 = data_stats$TOP_zeroToTenCreeps_1 - data_stats$TOP_zeroToTenCreeps_2
+Top_MPM_10_20 = data_stats$TOP_tenToTwentyCreeps_1 - data_stats$TOP_tenToTwentyCreeps_2
+
+Mid_MPM_0_10 = data_stats$MIDDLE_zeroToTenCreeps_1 - data_stats$MIDDLE_zeroToTenCreeps_2
+Mid_MPM_10_20 = data_stats$MIDDLE_tenToTwentyCreeps_1 - data_stats$MIDDLE_tenToTwentyCreeps_2
+
+ADC_MPM_0_10 = data_stats$DUO_CARRY_zeroToTenCreeps_1 - data_stats$DUO_CARRY_zeroToTenCreeps_2
+ADC_MPM_10_20 = data_stats$DUO_CARRY_tenToTwentyCreeps_1 - data_stats$DUO_CARRY_tenToTwentyCreeps_2
+
+
+jungle_camps_diff = data_stats$neutral_jungle_1 - data_stats$neutral_jungle_2
+minions_data = data.frame(Top_MPM_0_10, Top_MPM_10_20, Mid_MPM_0_10, Mid_MPM_10_20, ADC_MPM_0_10, ADC_MPM_10_20, jungle_camps_diff)
+```
+
+
+```{r wards=FALSE}
+# Jungle ward variables
+jg_total_wards_bought_1 = data_stats$sight_jungle_1+data_stats$vision_jungle_1
+jg_total_wards_bought_2 = data_stats$sight_jungle_2+data_stats$vision_jungle_2
+
+jg_total_wards_bought_diff = jg_total_wards_bought_1 - jg_total_wards_bought_2
+jg_total_wards_placed_diff = data_stats$wards_placed_jungle_1 - data_stats$wards_placed_jungle_2
+jg_total_wards_killed_diff = data_stats$wards_killed_jungle_1 - data_stats$wards_killed_jungle_2
+
+# Support ward variables
+supp_total_wards_bought_1 = data_stats$sight_support_1 + data_stats$vision_support_1
+supp_total_wards_bought_2 = data_stats$sight_support_2 + data_stats$vision_support_2
+
+supp_total_wards_bought_diff = supp_total_wards_bought_1 - supp_total_wards_bought_2
+supp_total_wards_placed_diff = data_stats$wards_placed_support_1 - data_stats$wards_placed_support_2
+supp_total_wards_killed_diff = data_stats$wards_killed_support_1 - data_stats$wards_killed_support_2
+
+wards_data = data.frame(jg_total_wards_bought_diff, jg_total_wards_placed_diff, jg_total_wards_killed_diff, supp_total_wards_bought_diff, supp_total_wards_placed_diff, supp_total_wards_killed_diff)
+named_wards_data = wards_data
+names(named_wards_data) = c("Jungle Wards Bought Diff", "Jungle Wards Placed Diff", "Jungle Wards Killed Diff", "Support Wards Bought Diff", "Support Wards Placed Diff", "Support Wards Killed Diff")
+pairs(named_wards_data)
+```
+
+```{r first_blood=FALSE}
+first_blood_data = data.frame(data_stats$firstBlood)
+```
+
+```{r dragon/baron=FALSE}
+dragon_1 = data_stats$dragon_1
+dragon_2 = data_stats$dragon_2
+
+baron_1 = data_stats$baron_1
+baron_2 = data_stats$baron_2
+
+dragon_baron_data = data.frame(dragon_1, dragon_2, baron_1, baron_2)
+```
+
+```{r aggregate=FALSE}
+x_data = cbind(data_champs, minions_data, wards_data, first_blood_data, dragon_baron_data)
+y_data = data.frame(data_stats$winner)
+```
+
+
