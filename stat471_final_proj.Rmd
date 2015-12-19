@@ -39,7 +39,7 @@ setwd(dir)
 
 set.seed(37)
 
-lol_data <- read.csv("lol_data.csv", header=T, stringsAsFactors=T, as.is=T, 
+lol_data <- read.csv("new_lol_data.csv", header=T, stringsAsFactors=T, as.is=T, 
                    na.strings="")
 lol_data = na.omit(lol_data)
 ```
