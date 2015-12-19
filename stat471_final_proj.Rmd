@@ -1,0 +1,45 @@
+---
+title: 'STAT 471/701: Project'
+author: "Benson Chen, Kevin Lei"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    number_sections: yes
+    self_contained: no
+    toc: yes
+  word_document: default
+---
+```{r setup_library, include=FALSE}
+  knitr::opts_chunk$set(tidy=TRUE, fig.width=12,  fig.height=8)
+  library(leaps)
+  library(class)
+  library(ISLR)
+  library(MASS)  # load package MASS
+  library(lattice) # xyplot(), bwplot()
+  library(ggplot2)
+  library(plotrix)
+  library(pROC)
+  library(glmnet)
+  library(LiblineaR)
+```
+
+_________________________________________________________________________
+# Introduction
+**Background Information**
+
+
+```{r setup_data, include=FALSE}
+## Set working directory
+
+rm(list=ls()) # Remove all the existing variables
+
+dir=c("/Users/Benson/Desktop/stat471_final_proj")
+setwd(dir)
+
+set.seed(37)
+
+lol_data <- read.csv("lol_data.csv", header=T, stringsAsFactors=T, as.is=T, 
+                   na.strings="")
+lol_data = na.omit(lol_data)
+```
