@@ -34,7 +34,8 @@ _________________________________________________________________________
 
 rm(list=ls()) # Remove all the existing variables
 
-dir=c("/Users/Benson/Desktop/stat471_final_proj")
+# dir=c("/Users/Benson/Desktop/stat471_final_proj")
+dir=c("C:\\Users\\Kevin\\Documents\\University of Pennsylvania\\FALL 2015\\STAT 471\\Final Project\\code")
 setwd(dir)
 
 set.seed(37)
