@@ -32,7 +32,7 @@ import org.json.JSONObject;
 public class GetData {
 	
 	// Replace this with your API Key
-	public static final String API_KEY = "385d5016-00ca-4004-8257-6c2d4815d4b4";
+	public static final String API_KEY = "INSERT_API_KEY_HERE";
 	public static final String MATCHLIST_URL = "https://na.api.pvp.net/api/lol/na/v2.2/matchlist/by-summoner/";
 	public static final String SUMMONER_URL = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
 	public static final String MATCH_URL = "https://na.api.pvp.net/api/lol/na/v2.2/match/";
