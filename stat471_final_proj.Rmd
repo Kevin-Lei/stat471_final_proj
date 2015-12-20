@@ -34,15 +34,10 @@ _________________________________________________________________________
 
 rm(list=ls()) # Remove all the existing variables
 
-# dir=c("/Users/Benson/Desktop/stat471_final_proj")
-dir=c("C:\\Users\\Kevin\\Documents\\University of Pennsylvania\\FALL 2015\\STAT 471\\Final Project\\code")
+dir=c("/Users/Benson/Desktop/stat471_final_proj")
 setwd(dir)
 
 set.seed(37)
-
-lol_data <- read.csv("new_lol_data.csv", header=T, stringsAsFactors=T, as.is=T, 
-                   na.strings="")
-lol_data = na.omit(lol_data)
 
 data_champs <- read.csv("data_champs.csv", header=T, stringsAsFactors=T, as.is=T, 
                    na.strings="")
@@ -115,11 +110,32 @@ baron_1 = data_stats$baron_1
 baron_2 = data_stats$baron_2
 
 dragon_baron_data = data.frame(dragon_1, dragon_2, baron_1, baron_2)
+par(mfrow=c(1,2))
+hist(dragon_1, main = "Histogram of Dragon Kills for Team 1", xlab ="Number of Dragon Kills", cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+hist(dragon_2, main = "Histogram of Dragon Kills for Team 2", xlab ="Number of Dragon Kills", cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+
+hist(baron_1, main = "Histogram of Baron Kills for Team 1", xlab ="Number of Baron Kills", cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+hist(baron_2, main = "Histogram of Baron Kills for Team 2", xlab ="Number of Baron Kills", cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+par(mfrow=c(1,1))
 ```
 
 ```{r aggregate=FALSE}
 x_data = cbind(data_champs, minions_data, wards_data, first_blood_data, dragon_baron_data)
-y_data = data.frame(data_stats$winner)
+winner = data_stats$winner
+y_data = data.frame(winner)
 ```
+
+```{r lasso=FALSE}
+x_mat = model.matrix(championId_266~., data=x_data)
+y_mat = model.matrix(~., data=y_data)[, 2]
+fit.cv_default = cv.glmnet(x_mat, y_mat, family="binomial", alpha=1.0, nfolds=10, type.measure="class") 
+plot(fit.cv_default, cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+
+new_lambda = exp(-3.8)
+fit.select = glmnet(x_mat, y_mat, family="binomial", alpha=1.0, lambda = new_lambda)
+fit.beta = coef(fit.select)
+```
+
+
 
 
