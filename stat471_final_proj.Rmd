@@ -32,7 +32,8 @@ _________________________________________________________________________
 
 
 ```{r setup_data, include=FALSE}
-## Set working directory
+####### THE ACTUAL PDF WAS NO GENERATED WITH THIS KNITR FILE, WE DID IT THROUGH LATEX, BUT OUR R CODE IS HERE.
+########
 
 rm(list=ls()) # Remove all the existing variables
 
@@ -42,27 +43,34 @@ setwd(dir)
 
 set.seed(37)
 
+#includes data about champions
 data_champs <- read.csv("data_champs.csv", header=T, stringsAsFactors=T, as.is=T, 
                    na.strings="")
 
+#includes data about other statistics include response variable
 data_stats <- read.csv("data_stats.csv", header=T, stringsAsFactors=T, as.is=T, 
                    na.strings="")
+
+#things are split to make them easier to work with
 ```
 
 # Data Overview
 
 ```{r champions, include=FALSE}
 
+#take absolute value of all champions to count
 pos = abs(data_champs)
 pos_sums = colSums(pos)
 names(pos_sums) = names(pos)
 
+#plot histogram
 hist(pos_sums, main="Histogram of Number of Champion Plays", xlab="Number of Champion Plays", ylab="Frequency", breaks=20, cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 
 ```
 
 
 ```{r minion_jungle=FALSE}
+#aggregate data for minions/jungle camps
 Top_MPM_0_10 = data_stats$TOP_zeroToTenCreeps_1 - data_stats$TOP_zeroToTenCreeps_2
 Top_MPM_10_20 = data_stats$TOP_tenToTwentyCreeps_1 - data_stats$TOP_tenToTwentyCreeps_2
 
@@ -102,11 +110,13 @@ pairs(named_wards_data)
 ```
 
 ```{r first_blood=FALSE}
+#first blood variable
 firstBlood = data_stats$firstBlood
 first_blood_data = data.frame(firstBlood)
 ```
 
 ```{r dragon/baron=FALSE}
+#dragon baron variables
 dragon_1 = data_stats$dragon_1
 dragon_2 = data_stats$dragon_2
 
@@ -124,23 +134,27 @@ par(mfrow=c(1,1))
 ```
 
 ```{r aggregate=FALSE}
+#combine all x variables
 x_data = cbind(data_champs, minions_data, wards_data, first_blood_data, dragon_baron_data)
 winner = data_stats$winner
 y_data = data.frame(winner)
 ```
 
 ```{r lasso=FALSE}
+#LASSO, same as we did in class
 x_mat = model.matrix(championId_266~., data=x_data)
 y_mat = model.matrix(~., data=y_data)[, 2]
 fit.cv_default = cv.glmnet(x_mat, y_mat, family="binomial", alpha=1.0, nfolds=10, type.measure="class") 
 plot(fit.cv_default, cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 
+#pick some value of lambda
 new_lambda = exp(-3.8)
 fit.select = glmnet(x_mat, y_mat, family="binomial", alpha=1.0, lambda = new_lambda)
 fit.beta = coef(fit.select)
 ```
 
 ```{r train_test =FALSE}
+#divide into test and train
 train_index = sample(3000, size = 2000)
 x_train = x_data[train_index, ]
 y_train = y_data[train_index, ]
@@ -150,6 +164,7 @@ y_test = y_data[-train_index, ]
 ```
  
 ```{r logistic regression=FALSE}
+#create actual LR
 lr_model = glm(y_train~Top_MPM_0_10+Top_MPM_10_20+Mid_MPM_10_20+ADC_MPM_0_10+ADC_MPM_10_20+jungle_camps_diff+supp_total_wards_placed_diff+firstBlood+dragon_1+dragon_2+baron_1+baron_2,family=binomial(logit), data=x_train)
 
 lr_model_reduced = glm(y_train~Top_MPM_10_20+Mid_MPM_10_20+ADC_MPM_10_20+jungle_camps_diff+supp_total_wards_placed_diff+firstBlood+dragon_1+dragon_2+baron_1+baron_2,family=binomial(logit), data=x_train)
@@ -157,6 +172,7 @@ lr_model_reduced = glm(y_train~Top_MPM_10_20+Mid_MPM_10_20+ADC_MPM_10_20+jungle_
 #likelihood ratio test:
 1-pchisq(lr_model_reduced$deviance-lr_model$deviance, lr_model_reduced$df.residual-lr_model$df.residual)
 
+#predictions
 lr_model.predict = predict(lr_model_reduced, x_test, type="response")
 lr_class_labels = (lr_model.predict > 0.5) + 0
 lr_model.roc=roc(y_test, lr_model.predict, plot=T)
