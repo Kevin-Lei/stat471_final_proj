@@ -64,10 +64,6 @@ public class GetData {
 	  }
 	  
 	  writeData();
-//	  getFeatures("1931532264");
-	  
-//	  int start = 1931532264;
-//	  int end = start + 10000;
 
 	  int start = 0;
 	  int end = matchesList.size();
