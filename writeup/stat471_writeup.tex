@@ -5,6 +5,11 @@
 
 \usepackage[usenames, dvipsnames]{color}
 \usepackage{multirow}
+\usepackage{subfig}
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 
 \begin{document}
 
@@ -32,7 +37,7 @@
 		Find out what variables contribute most to winning a game, so that we can create strategies that will give better chances of winning the game.		
 	\end{enumerate}
 	
-	For the first goal, although it may not make much sense to use the match information to predict the probability of winning, because the match will have already happened by then, there are other uses. One is that this model can be a good proxy for predicting the probability of winning when the game is still happening. League of Legends is a heavily broadcasted Esport, and having a measure of how the game is doing is an important metric.
+	For the first goal, although it may not make much sense to use the match information to predict the probability of winning, because the match will have already happened by then, there are other uses. One is that this model can be a good proxy for predicting the probability of winning when the game is still happening. League of Legends is a heavily broadcasted Esport, and having a measure of how the game is doing is an important metric. For instance, by using logistic regression, we get a probability of how likely a team is likely to win. While the game is happening, knowing this metric can better provide viewers with an estimate of how much more one team is winning compared to the other team.
 	
 	For the second goal, we really want to look at what variables most indicative of a winning match-up. Using this information, we can construct strategies that can give teams a sense of what they should strive to do during the game to get an advantage.
 	
@@ -82,12 +87,218 @@ We also removed any features from our dataset that were not useful. For example,
 	We see from the following table the summary statistics of the frequency of champions played (on either team):
 	
 	\begin{center}
-		\begin{tabular}{ |l|l|l|l|l|l| }
+		\begin{tabular}{ |L{2cm}|L{2cm}|L{2cm}|L{2cm}|L{2cm}|L{2cm}| }
 			\hline
 			Minimum & 1st Qt. & Median & Mean & 3rd Qt. & Maximum \\ \hline
 			14.0 & 83.5 & 159.0 & 236.2 & 350.5 & 1166.0 \\ \hline
 		\end{tabular}
 	\end{center}
+	
+	We see that there is a wide range of frequencies for how often a champion is played--this is unsurprising. There are some champions that are played very frequently, while there are others that are rarely played. According to the above, the average champion was played in 7.83\% of the games.
+	
+	\begin{figure}
+		\includegraphics[width=\textwidth]{images/hist_champions.png}
+		\caption{Histogram of the number of times a champion is played}
+	\end{figure}
+	
+	From the histogram, we see that there is a pretty significant right skew. Again, this is not extremely surprising as there are a few champions that are played very frequently, while other champions are rarely being played.
+
+In fact, the top three most popular champions were Thresh (1166 games), Janna (914 games) and Lee Sin (824 games). It is unsurprising that the top two are Thresh and Janna because they are found in the support roles, and there is usually less variety in the champions that you can pick for the support roles.
+
+	\begin{center}
+		\begin{tabular}{ |l|l|l|l| }
+			\hline
+			& Thresh & Janna & Lee Sin \\ \hline
+			Number of Games & 1166 & 914 & 824 \\ \hline
+			Total \% of Games & 38.9\% & 30.5\% & 27.5\% \\ \hline			
+		\end{tabular}
+	\end{center}
+	
+	The bottom three least popular champions were Quinn (14 games, 0.05\%), Galio (17 games, 0.06\% ), and Poppy (17 games, 0.06\%). This is also unsurprising as these champions are typically considered much weaker than most other champions. Poppy and Galio in particular are very outdated champions that players have mostly forgotten about, and are not current very strong.
+	
+	\begin{center}
+		\begin{tabular}{ |l|l|l|l| }
+			\hline
+			& Quinn & Galio & Poppy \\ \hline
+			Number of Games & 14 & 17 & 17 \\ \hline
+			Total \% of Games & 0.05\% & 0.06\% & 0.06\% \\ \hline			
+		\end{tabular}
+	\end{center}	
+	
+	\subsection{Minions and Jungle Camps}
+	
+	In a LoL game, you want to earn gold to buy items that make you stronger. There are several ways of earning gold including killing the other team, killing minions and jungle camps. If you have more gold than your opponent, you will be at a significant advantage, because your spells and attacks will deal significantly more damage.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/minions.jpg}
+		\caption{An example of a minion camp}
+	\end{figure}
+
+	The most steady stream of income is from killing minions and jungle camps, because you never know when and if you are able to kill the enemy champions. Therefore, if you are able to kill a lot more minions than your opponent, you will naturally have more gold, which you can use to purchase items that increase your damage.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/jungle.jpg}
+		\caption{An example of a jungle camp}
+	\end{figure}
+
+	There are five roles in LoL, Top, Mid, ADC, Jungler and Support. There are some differences with how each role obtains gold as listed below. 
+	
+	\begin{center}
+		\begin{tabular}{ | L{2cm} | L{3cm} | }
+			\hline
+			Top & Kill Minions \\ \hline
+			Mid & Kill Minions \\ \hline
+			ADC & Kill Minions \\ \hline
+			Jungler & Kill Jungle Camps \\ \hline
+			Support & - \\ \hline						
+		\end{tabular}
+	\end{center}
+	
+	The support role usually does not have a steady stream of income, as the support player does not usually kill any minions or jungle camps for gold. Instead, they rely on their team getting kills of the other team’s champions, and getting gold that way. 
+
+	The jungler is different from the other roles in that the jungler kills jungle camps for gold instead of regular minions. 
+
+	For minions, we use a statistic called minions per minute, or MPM, which as the name suggests, describes how many minions a champion has killed per minute. Because only three roles really kill minions, we look at the difference in MPM in the Top, Mid and ADC roles. While the support and junglers do kill some minions, they usually kill a small number, and so it does not make much sense to include features for these two roles.
+
+	Additionally, we delve further and look at the differences in MPM between the two teams from 0-10 minutes and 10-20 minutes. We make this distinction, because the early game is most indicative of how people are doing. If a team wins, it’s obvious that their final minion count will be higher, but it is not obvious whether or not their initial minion kills will be higher. Perhaps they are giving up minion kills early in the game to secure other objectives.
+
+	Because the only statistics we can find on jungle camps is the total number of jungle camps killed, we also include the difference in number of total jungle camps killed as a variable.
+
+	Therefore, the 7 variables we include for minion/jungle camps kills are succinctly summarized in the following table:
+	
+	\begin{center}
+		\begin{tabular}{ | L{3cm} | L{5cm} | }
+			\hline
+			\multirow{3}{*}{0 - 10 minutes} & Difference in MPM for Top \\
+			& Difference in MPM for Mid \\
+			& Difference in MPM for ADC \\ \hline
+			\multirow{3}{*}{10 - 20 minutes} & Difference in MPM for Top \\
+			& Difference in MPM for Mid \\
+			& Difference in MPM for ADC \\ \hline
+		\end{tabular}
+	\end{center}
+	
+	\subsection{Wards}
+	
+	Wards are important, because they give vision of the opponent’s team. With wards, you can  better strategize during the game to exploit the opponent’s positioning. Similarly, if your opponent places a lot of wards on the map, they can see how your team is being positioned.
+
+	Wards can be bought from the shop, or placed using certain items. Because wards cost money to buy, only a few roles, namely the jungle and support roles buy wards. This is because other roles would rather invest in damage items so that they can more easily kill their opponents. Therefore, we mainly concentrate on the difference of warding patterns between the two teams of the jungle and support roles.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/wards.png}
+		\caption{Stealth Ward (bottom) and Vision Ward (top)}
+	\end{figure}
+	
+	All variables are considered in the context of the difference between the two teams. For instance, the difference in number of wards bought by the two teams would be:
+	
+	\begin{center}
+		(wards bought by team 1) - (wards bought by team 2)
+	\end{center}
+
+	There are two different types of wards that one can buy from the shop, sight and vision wards; however, because we feel that the total number is more important than knowing the specific distribution, we use the total number of wards bought.
+
+	Another important variable to consider is the number of wards killed. Just as they can be placed, wards can also be killed by the other team. This is extremely important, because by destroying wards, you are eliminating the enemy’s vision of you. As mentioned earlier, vision is an extremely important part of the game, because it allows you to make more informed strategic movements during the game. Therefore, by destroying wards, it is expected that your opponents will make worse decisions, increasing the chance that you will win.
+	
+	\begin{center}
+		\begin{tabular}{ | C{3cm} | L{7cm} | }
+			\hline
+			\multirow{3}{*}{Jungle} & Difference in number of total wards bought \\
+			& Difference in number of wards placed \\
+			& Difference in number of wards killed \\ \hline
+			\multirow{3}{*}{Support} & Difference in number of total wards bought \\
+			& Difference in number of wards placed \\
+			& Difference in number of wards killed \\ \hline
+		\end{tabular}
+	\end{center}
+	
+	We see from the pairwise scatter plots that there is no clear correlation between any of the wards variables. This is surprising, as you would expect that if the support on team 1 has bought a lot more wards than the support on the the other team, then they would have placed more wards as well. However, this could simply be because of the noise in the data.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/pairwise_scatter.png}
+		\caption{Pairwise scatter plots of selected variables}
+	\end{figure}	
+	
+	\subsection{First Blood}
+	
+	In LoL,``first blood'' is the term used for the first kill of the game. In order to reward the champion that gets the first blood, that champion is given extra gold. Not only does the first blood give a physical advantage to the team that gets it, it also gives them a psychological advantage. This is because the team that had their champion killed first usually feels psychological stress of knowing that they are behind the other team. Therefore, we felt that the first blood variable might be predictive and important for strategic purposes.
+
+As a feature, the first blood variable is a simply binary variable that is 1 if team 1 got the first blood, and 0 if team 2 got the first blood.
+	
+	\subsection{Dragon and Baron}
+	
+	Besides killing minions, there are also two objectives, the dragon and the baron. Killing these two objectives can give your team a significant buff that greatly increases your chances of winning.
+
+	\textbf{Dragon}. The dragon is available to be killed right at the start of the game. Killing the dragon disables the dragon, and no team can kill it again for another 6 minutes. Killing the dragon grants the killing team a permanent buff that includes things like greater damage, and more movement speed.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{images/dragon.png}
+		\caption{Dragon}
+	\end{figure}		
+
+	\textbf{Baron Nashor}. The Baron Nashor, or Baron for brevity, spawns on the map at 20 minutes. Killing the Baron disables the Baron, and no team can kill it again for another 7 minutes. Killing the Baron grants the killing team a temporary buff that greatly increases the pushing strength of the team. This allows the team that get the buff to greatly speed up the pace of the game, and push for the win. 
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.4\textwidth]{images/baron.png}
+		\caption{Baron Nashor}
+	\end{figure}	
+
+	In general, the Baron is much harder objective to take down compared to the dragon, and offers a much greater reward for taking it down. In our analysis, we consider the number of barons and dragons taken down by each team. Unlike the other variables, we do not use the difference in the number of dragons/barons slain, because the actual number matters. For instance, the more dragons you kill, the stronger the buffs are. 
+
+	Therefore, in this category, we have a total of 4 variables, the number of barons and dragons taken by team 1 and 2.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/hist_dragon.png}
+		\caption{Histogram of Dragon Kills}
+	\end{figure}	
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/hist_baron.png}
+		\caption{Histogram of Baron Nashor Kills}
+	\end{figure}
+	
+	First, we notice that the distributions for team 1 and team 2 are similar. This is to be expected, as the teams that win should be randomly distributed. Second, we see that usually, a much higher number of dragons are killed. This is in-line with the fact that the dragon is much easier to kill, and does not give as big of an advantage. In fact, most games go through without a single baron kill.
+	
+	\section{Feature Selection}
+	
+	Because one of our main goals is interpretation, to find what strategic moves a team should utilize, we first want to use logistic regression to model the data. To do that, we first use LASSO to do feature selection, because we have around 145 features from our cleaned dataset.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.65\textwidth]{images/lasso.png}
+		\caption{MCE of LASSO using 10-fold CV}
+	\end{figure}
+	
+	The above graph plots the misclassification error against the $\log(\lambda)$ values in a 10-fold cross validation setting. We see that as $\log(\lambda)$ decreases, the misclassification error asymptotically levels off. Because it seems like we have found a reasonable minimum, we do not have to try other values of lambda.
+
+	The right dashed line indicates a $\log(\lambda)$ value that is 1SE above the minimum. I chose to use a lambda value slightly to left of the 1SE in order to get a few more variables. Using a $\log(\lambda)$ value of -3.8, we got a reasonable number of variables, 12 variables, so we ended up using these features.
+
+	The twelve selected important variables are as follows, with a description as a reminder of what they are, and why they are important:
+	
+	\begin{center}
+		\begin{tabular}{ | l | L{7cm} | }
+			\hline
+			Top MPM 0-10 & This is the minions per minute score for the Top role, from 0 to 10 minutes in the game. \\ \hline
+			Top MPM 10-20 & This is the minions per minute score for the Top role, from 10 to 20 minutes in the game. \\ \hline
+			Mid MPM 10-20 & This is the minions per minute score for the Mid role, from 10 to 20 minutes in the game. \\ \hline
+			ADC MPM 0-10 & This is the minions per minute score for the ADC role, from 0 to 10 minutes in the game. \\ \hline
+			ADC MPM 10-20 & This is the minions per minute score for the ADC role, from 10 to 20 minutes in the game. \\ \hline
+			Difference in Jungle Camps Kills & This is the total number of difference in jungle camps killed in the game. \\ \hline
+			Difference in Number of Wards Placed by Support & This is the difference in number of wards placed by the support. Recall that wards are important because they give you vision of the enemy team, and allow you to better make decisions during the game. \\ \hline
+			First Blood & This indicates the team that got the first kill during the game. \\ \hline
+			Number of Dragon Kills by Team 1 & This is the number of dragons killed by team 1. Recall that dragons give a permanent buff to the team that killed it, but this buff is much weaker than the Baron Buff. \\ \hline
+			Number of Dragon Kills by Team 2 & This is the number of dragons killed by team 2. Recall that dragons give a permanent buff to the team that killed it, but this buff is much weaker than the Baron Buff. \\ \hline
+			Number of Baron Kills by Team 1 & This is the number of barons killed by team 1. Recall that barons give a very powerful temporary buff to the team that killed it. \\ \hline
+			Number of Baron Kills by Team 2 & This is the number of barons killed by team 2. Recall that barons give a very powerful temporary buff to the team that killed it. \\ \hline
+		\end{tabular}
+	\end{center}	
 	
 	\section{Works Cited}
 	\begin{enumerate}
@@ -106,6 +317,8 @@ We also removed any features from our dataset that were not useful. For example,
 		\item[]
 		\url{http://www.nytimes.com/2014/08/26/technology/amazon-nears-a-deal-for-twitch.html}
 	\end{enumerate}
+	
+	\section{Appendix}
 	
 %  \begin{figure}
 %  \includegraphics[width=\textwidth]{protocol.png}
