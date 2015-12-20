@@ -355,7 +355,7 @@ We also removed any features from our dataset that were not useful. For example,
 	
 	\begin{figure}[!htb]
 		\centering
-		\includegraphics[width=\textwidth]{images/lr_roc.png}
+		\includegraphics[width=0.7\textwidth]{images/lr_roc.png}
 		\caption{ROC for Logistic Regression}
 	\end{figure}
 	
@@ -373,7 +373,7 @@ model. More specifically, we used the training set created for the Logistic Regr
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/rf_importance.png}
-		\caption{ROC for Logistic Regression}
+		\caption{Importance of Variables in Random Forest}
 	\end{figure}
 	
 	We also see that firstBlood is the least important variable, confirming the results form the Logistic Regression model where firstBlood had a small coefficient. This is because getting the first kill is not a huge advantage and can sometimes make a team overconfident and risk-seeking.
@@ -381,7 +381,7 @@ model. More specifically, we used the training set created for the Logistic Regr
 	\begin{figure}[!htb]
 		\centering
 		\includegraphics[width=\textwidth]{images/rf_mce.png}
-		\caption{ROC for Logistic Regression}
+		\caption{Classification error when using a different number of trees}
 	\end{figure}
 	
 	Using the Out-Of-Bag error, we also looked at how Missed Classification Error varied with the number of trees. We saw that the at about 100 trees, adding additional trees had a small effect on lowering the MCE.
@@ -399,8 +399,8 @@ model. More specifically, we used the training set created for the Logistic Regr
 	
 	\begin{figure}[!htb]
 		\centering
-		\includegraphics[width=\textwidth]{images/rf_roc.png}
-		\caption{ROC for Logistic Regression}
+		\includegraphics[width=0.7\textwidth]{images/rf_roc.png}
+		\caption{ROC for Random Forest}
 	\end{figure}
 		
 	The Random Forest model also achieves an AUC of 0.9551 which is slightly better than the Logistic Regression model. As stated before and with the same rationale, this model performs well. Using a nonparametric model that achieves similar results shows that our analysis and results are robust and does not rely heavily on certain assumptions.
