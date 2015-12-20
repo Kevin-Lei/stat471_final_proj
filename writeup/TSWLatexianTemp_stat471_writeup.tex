@@ -11,6 +11,8 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 
+\usepackage{listings}
+
 \begin{document}
 
   \title{Predicting and Analyzing League of Legends Matches}
@@ -301,7 +303,15 @@ We also removed any features from our dataset that were not useful. For example,
 		\caption{Summary of Logistic Regression coefficients}
 	\end{figure}
 	
-	$\log(\frac{Pr[win]}{1 - Pr[win]}) = 0.27 + 0.10 * ($Top MPM 0-10$) + 0.25 * ($Top MPM 10-20$) + 0.26 * ($Mid MPM 10-20$) + 0.10 * ($ADC MPM 0-10$) + 0.28 * ($ADC MPM 10-20$) + 0.012 * ($Jungle Camp$) + 0.026 * ($Wards Placed by Supports$) + 0.32 * ($First Blood$) + 0.57 * ($Dragons Team 1$) - 0.60 * ($Dragons Team 2$) + 1.34 * ($Barons Team 1$) - 1.56 * ($Barons Team 2$)$
+	\begin{align*}
+	\log \left( \frac{Pr[win]}{1 - Pr[win]} \right) =&\; 0.27 + 0.10 * (\text{Top MPM 0-10}) + 0.25 * (\text{Top MPM 10-20}) \\
+	& + 0.26 * (\text{Mid MPM 10-20}) + 0.10 * (\text{ADC MPM 0-10}) \\
+	& + 0.28 * (\text{ADC MPM 10-20}) + 0.012 * (\text{Jungle Camp}) \\
+	& + 0.026 * (\text{Wards Placed by Supports}) + 0.32 * (\text{First Blood}) \\
+	& + 0.57 * (\text{Dragons Team 1}) - 0.60 * (\text{Dragons Team 2}) \\
+	& + 1.34 * (\text{Barons Team 1}) - 1.56 * (\text{Barons Team 2})
+	\end{align*}
+	
 	
 	
 	We immediately see that the MPM (minions per minute) variable is extremely important. This comes as no surprise, because the more MPM you achieve, the more gold you earn, and the better items you can buy. Items can then make you deal more damage, and allowing you to achieve an even higher MPM or even kill the enemy’s champions, creating a positive feedback loop. In fact, for the 10-20 minutes range, an increase in 1 more minion killed per minute correlates to an average increase of 0.26 in the log odds ratio.
@@ -353,9 +363,92 @@ We also removed any features from our dataset that were not useful. For example,
 
 	To reiterate our original goals, we want a predictive model as a proxy to judge the outcome of the game while the match is happening. That is, we want to be able to use this model, say after the 20 minutes mark, to judge how much more one team is winning compared to the other. And the LR model is one method for which we can use to do this. Another, which we explore next, is using random forests.
 	
-	\section{Decision Trees}
+	\section{Random Forest}
+	
+	We then approached our problem using a non-parametric method, creating a Random Forests 
+model. More specifically, we used the training set created for the Logistic Regression model and limited the number of variables per tree to 10. 
+
+	We measured the importance of each variable by looking at each variable’s impact on the Gini coefficient. We found that the number of dragon and baron kills were the most significant in predicting a win which conforms with our prior knowledge that these types of kills provide significant advantages to the team.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=0.5\textwidth]{images/rf_importance.png}
+		\caption{ROC for Logistic Regression}
+	\end{figure}
+	
+	We also see that firstBlood is the least important variable, confirming the results form the Logistic Regression model where firstBlood had a small coefficient. This is because getting the first kill is not a huge advantage and can sometimes make a team overconfident and risk-seeking.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/rf_mce.png}
+		\caption{ROC for Logistic Regression}
+	\end{figure}
+	
+	Using the Out-Of-Bag error, we also looked at how Missed Classification Error varied with the number of trees. We saw that the at about 100 trees, adding additional trees had a small effect on lowering the MCE.
+	
+	\begin{center}
+		\begin{tabular}{ | L{3cm} | C{2cm} | C{2cm} | }
+			\hline
+			& Predicted Loss & Predicted Win \\ \hline
+			Actual Loss & 923 & 133 \\ \hline
+			Actual Win & 129 & 815 \\ \hline
+		\end{tabular}
+	\end{center}	
+	
+	From our confusion matrix, we saw that when weighting both wins and losses equally, we had a missed classification error of 13.1\%, comparable to the Logistic Regression model.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/rf_roc.png}
+		\caption{ROC for Logistic Regression}
+	\end{figure}
+		
+	The Random Forest model also achieves an AUC of 0.9551 which is slightly better than the Logistic Regression model. As stated before and with the same rationale, this model performs well. Using a nonparametric model that achieves similar results shows that our analysis and results are robust and does not rely heavily on certain assumptions.
+	
+	\section{Conclusion}
+	
+	In our analysis, we looked at two different models, logistic regression with feature selection and random forests. The logistic regression model not only offers us a predictive model, but also interpretation of the variables. It tells us how the response variable (likelihood of winning) is changed when the explanatory variables are changed.
+
+	For logistic regression, we first did feature selection using LASSO. The main features that should be highlighted are the MPM for each of the three roles, Top, Mid and ADC, wards placed by the support, the team that got the first blood, as well as dragon and Baron objective kills.
+
+	From a strategic standpoint, there are several important takeaways.
+	
+	\begin{enumerate}
+		\item
+		Being able to kill as many minions is very important. This is a test of the skill of the player, and to improve, players should work on their ability to kill as many minions as they can. No matter which of the three roles, Top, Mid, or ADC, this skill is very important.
+		
+		\item
+		For supports, placing more wards is very important. This creates more vision for your team, and allows your team to make more informed decisions in-game.
+		
+		\item
+		Being able to get first blood is important, but it is okay if your team isn’t the one to first kill an enemy champion. More important than the gold boost is probably the morale boost that the team gets from getting first blood.
+		
+		\item
+		Dragon and Baron objective kills are very important. It is important to have tight control over these objectives, because they confer such a huge advantage to the team that kills these objectives.
+	\end{enumerate}
+	
+	In terms of prediction, we see that our LR model did very well, achieving an AUC of 94.12\%. However, we proceeded to use random forest to see if we can do even better.
+
+	While LR is a parametric model, random forests are completely non-parametric. This is good in several respects, because there are many non-linear relationships that exists in the data that can be captured by the random forests.
+
+	Our RF model performed similarly with an AUC of 95.51\% and a MCE of 13.1\% The marginal improvement in performance is probably too small to be attributed to any assumptions in LR. This does tell us that our results are robust and that our analysis is consistent across two very different types of statistical models.
+	
+	\section{Limitations}
+	
+	There are many variables that we did not consider that are also important. For instance, each player can choose a set of runes and masteries, which give combat statistics to their champions. Additionally, the item purchases that each player chooses can also heavily affect his or her performance. However, there are simply too many combinations of items and therefore would not be feasible for this project.
+
+	Additionally, a game of LoL is extremely dynamic, and we simply captured a few static variables, such as number of wards placed, or number of wards killed. There could be many confounding variables that lead to high numbers for number of jungle camps killed. 
+
+	We also assumed that we knew which player chose which role. The Riot API gave its best guess as to which role it thought the player was, but roles are only loosely defined in the game. Therefore, there could be some inaccuracies in the data that we simply cannot account for. 
+
+	It maybe more useful to limit our matches to a particular patch (update to the game), rather than the season (all the updates in a given year). By doing so, we probably would have seen some champions having significant contribution to a team’s victory. This is because during certain patches, some champions might be too overpowered, only to be fixed in a later patch.
+
+	Furthermore, one of the most important things that we did not consider were the bans in a game. Before each player selects his or her champion, each team can decide to ban a certain number of champions, so that they cannot be played in that game.
+
+	Nevertheless, despite the limitations and inaccuracies that may exist, we believe that we have constructed a model that adequately served our main two goals. One is to construct a model that can be used as a proxy to predict likelihood of winning as a matching is ongoing. The second is to find out what variables are the most impactful in order to determine what strategies will lead to the most victories.
 	
 	\section{Works Cited}
+
 	\begin{enumerate}
 		\item[]
 		\url{http://www.lolesports.com/en\_US/all-star/articles/worlds-2015-viewership}
@@ -374,13 +467,13 @@ We also removed any features from our dataset that were not useful. For example,
 	\end{enumerate}
 	
 	\section{Appendix}
-	
+	R code and Java program can be found at: \url{https://github.com/Kevin-Lei/stat471\_final\_proj}
 		
 	\begin{figure}
 		\centering
 		\includegraphics[width=1.0\textwidth]{images/pairwise_scatter.png}
 		\caption{Pairwise scatter plots of selected variables}
-	\end{figure}	
+	\end{figure}
 	
 %  \begin{figure}
 %  \includegraphics[width=\textwidth]{protocol.png}
