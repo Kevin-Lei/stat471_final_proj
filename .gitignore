@@ -4,3 +4,5 @@
 .project
 bin/
 lol_data_1.csv
+.Rhistory
+.RData
