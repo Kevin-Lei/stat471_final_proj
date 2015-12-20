@@ -13,7 +13,7 @@
 
 \begin{document}
 
-  \title{Predicting League of Legends Matches}
+  \title{Predicting and Analyzing League of Legends Matches}
   \author{Benson Chen \and Kevin Lei}
   \institute{University of Pennsylvania}
   \maketitle
@@ -37,7 +37,7 @@
 		Find out what variables contribute most to winning a game, so that we can create strategies that will give better chances of winning the game.		
 	\end{enumerate}
 	
-	For the first goal, although it may not make much sense to use the match information to predict the probability of winning, because the match will have already happened by then, there are other uses. One is that this model can be a good proxy for predicting the probability of winning when the game is still happening. League of Legends is a heavily broadcasted Esport, and having a measure of how the game is doing is an important metric. For instance, by using logistic regression, we get a probability of how likely a team is likely to win. While the game is happening, knowing this metric can better provide viewers with an estimate of how much more one team is winning compared to the other team.
+	For the first goal, it may not make much sense to use the match information to predict the probability of winning since the match will have already happened by then. However, there are other uses. One use is that this model can be a good proxy for predicting the probability of winning when the game is still happening. League of Legends is a heavily broadcasted Esport and having a measure of how the game is progressing is an important metric. For instance, by using logistic regression, we get a probability of how likely a team is likely to win. While the game is being played, knowing this metric can better provide viewers with an estimate of how much of an advantage one team has over the other team at that point in time.
 	
 	For the second goal, we really want to look at what variables most indicative of a winning match-up. Using this information, we can construct strategies that can give teams a sense of what they should strive to do during the game to get an advantage.
 	
@@ -272,7 +272,7 @@ As a feature, the first blood variable is a simply binary variable that is 1 if 
 	
 	\begin{figure}[!htb]
 		\centering
-		\includegraphics[width=0.65\textwidth]{images/lasso.png}
+		\includegraphics[width=\textwidth]{images/lasso.png}
 		\caption{MCE of LASSO using 10-fold CV}
 	\end{figure}
 	
@@ -299,6 +299,66 @@ As a feature, the first blood variable is a simply binary variable that is 1 if 
 			Number of Baron Kills by Team 2 & This is the number of barons killed by team 2. Recall that barons give a very powerful temporary buff to the team that killed it. \\ \hline
 		\end{tabular}
 	\end{center}	
+	
+	\section{Logistic Regression}
+	
+	We then use logistic regression to create a model to both predict win rate, as well as to investigate the important strategical factors of gameplay.
+To do so, we split our data into 2 sections, a train set and a test set. Because we have 3,000 data points, we decided to use 2,000 of it as training data, and the other 1,000 as testing data.
+
+	The output of our logistic regression is as follows
+
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/lr_summary.png}
+		\caption{Summary of Logistic Regression coefficients}
+	\end{figure}
+	
+	We immediately see that the MPM (minions per minute) variable is extremely important. This comes as no surprise, because the more MPM you achieve, the more gold you earn, and the better items you can buy. Items can then make you deal more damage, and allowing you to achieve an even higher MPM or even kill the enemy’s champions, creating a positive feedback loop. In fact, for the 10-20 minutes range, an increase in 1 more minion killed per minute correlates to an average increase of 0.26 in the log odds ratio.
+
+	What is interesting is while the MPM values for ten to twenty minutes were all significant, only the MPM values for top and ADC are significant for the zero to ten minutes range. This is probably because if the MPM value for zero to ten minutes range is highly correlated with the MPM in the next ten minutes. Therefore, the model is probably not benefiting much from having these extra variables, so we remove the MPM for top and ADC in the zero to ten minutes range variables. We do a likelihood ratio test on the two nested models, and get a p value of less than 5\%. Therefore, it’s reasonable to say that there is not a significant difference between the two models, and we go with the simpler model.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/lr_simple.png}
+		\caption{Simpler Model for Logistic Regression}
+	\end{figure}
+	
+	Next we see that the number of jungle camps killed is also important. This makes sense similar to the MPM value. This is essentially a proxy for how well one jungler is doing compared to the other jungler. An increase in 1 total jungle camp killed correlates to an average increase in 0.0122 of the log odds ratio. This coefficient is much smaller than the MPM one, because that is a rate per minute, whereas this statistic is the total number killed.
+
+	We see that most of the wards features were not selected by LASSO, except for the difference in number of wards placed. For each additional ward that the support places more than the opponent, there is a correlation of an increase of 0.0254 in the log odds ratio of winning. It is unsurprising that the more wards the support places, the greater the chance of winning, because wards are such an important strategic aspect of the game. However, it is surprising that this was the only ward variable that was selected through LASSO.
+
+	We also see that there is a positive correlation in getting the first blood and winning. More specifically, being on the team that secures first blood correlates to an average increase of 0.370 in the log odds ratio of winning. This is expected, because getting the first blood gives the team a substantial gold lead early game, which they can use to kill their opponents over and over again. Additionally, on a psychological level, getting the first blood gives the team a morale boost, and when players feel like they are winning, they are probably likely to perform better.
+
+	On the matter of the objectives of dragons and barons, we once again see results that we would expect: positive coefficients for dragons and barons that your team kills and negative coefficients for dragons and barons that your opponent’s team slays. This is because both objectives give a significant boost to your team’s strengths. It is interesting to note that an additional baron or dragon that your opponent gets creates a greater difference in the log odds ratio of winning than dragons or barons that your own team secures. However, this difference may not be statistically significant.
+
+	What we do not see as important features are the champions themselves. This is unsurprising because Riot Gaming constantly balances champions so that they are not too strong or too weak. Therefore, we would expect that no one champion would consistently outperform other champions, all else held equal.
+
+	Next, we look at how well our model predicts the win rate. As a reminder, out the 3,000 data points, we used 2,000 of them for the training data, and 1,000 data points are left as testing data.
+
+	We obtain the following confusion matrix using a threshold of 50\%, weighing both wins and losses equally:
+
+	\begin{center}
+		\begin{tabular}{ | L{3cm} | C{2cm} | C{2cm} | }
+			\hline
+			& Predicted Loss & Predicted Win \\ \hline
+			Actual Loss & 479 & 66 \\ \hline
+			Actual Win & 61 & 394 \\ \hline
+		\end{tabular}
+	\end{center}
+	
+	Additionally, we see that our model achieves an AUC of 94.12\%.
+	
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[width=\textwidth]{images/lr_roc.png}
+		\caption{ROC for Logistic Regression}
+	\end{figure}
+	
+	It is unsurprising that our model is able to do so well. This is because certain factors of the match statistics is very predictive. If a team has secured many Baron objective kills, their team is much more likely to win, because the Baron gives such a huge buff to the team. Therefore, it is unsurprising that a simple model like LR can predict very accurately the outcome of the game. 
+
+	To reiterate our original goals, we want a predictive model as a proxy to judge the outcome of the game while the match is happening. That is, we want to be able to use this model, say after the 20 minutes mark, to judge how much more one team is winning compared to the other.
+	
+	\section{Decision Trees}
 	
 	\section{Works Cited}
 	\begin{enumerate}

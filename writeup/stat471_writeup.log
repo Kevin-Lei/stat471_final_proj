@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.12)  19 DEC 2015 22:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.12)  19 DEC 2015 23:05
 entering extended mode
 **stat471_writeup.tex
 ("C:\Users\Kevin\Documents\University of Pennsylvania\FALL 2015\STAT 471\Final Project\code\writeup\stat471_writeup.tex"
@@ -458,7 +458,7 @@ File: images/lasso.png Graphic file (type png)
 
 <use images/lasso.png>
 Package pdftex.def Info: images/lasso.png used on input line 275.
-(pdftex.def)             Requested size: 225.62817pt x 119.32222pt.
+(pdftex.def)             Requested size: 347.12354pt x 183.58525pt.
  [10 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/hist_drag
 on.png> <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/hist_b
 aron.png>]
@@ -471,18 +471,56 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [11 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lasso.png
 >]
-Overfull \hbox (49.76619pt too wide) in paragraph at lines 318--319
+<images/lr_summary.png, id=51, 375.804pt x 295.1025pt>
+File: images/lr_summary.png Graphic file (type png)
+ <use images/lr_summary.png>
+Package pdftex.def Info: images/lr_summary.png used on input line 312.
+(pdftex.def)             Requested size: 347.12354pt x 272.59628pt.
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+ [12]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+
+<images/lr_simple.png, id=55, 375.804pt x 295.1025pt>
+File: images/lr_simple.png Graphic file (type png)
+ <use images/lr_simple.png>
+Package pdftex.def Info: images/lr_simple.png used on input line 322.
+(pdftex.def)             Requested size: 347.12354pt x 272.59628pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [13 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_summar
+y.png>]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+ [14 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_simple
+.png>]
+<images/lr_roc.png, id=63, 375.804pt x 214.401pt>
+File: images/lr_roc.png Graphic file (type png)
+ <use images/lr_roc.png>
+Package pdftex.def Info: images/lr_roc.png used on input line 353.
+(pdftex.def)             Requested size: 347.12354pt x 198.04955pt.
+ [15 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_roc.pn
+g>]
+Overfull \hbox (49.76619pt too wide) in paragraph at lines 378--379
 []\OT1/cmr/m/n/10 http://www.nytimes.com/2014/08/26/technology/amazon-nears-a-deal-for-twitch.html 
  []
 
-[12]
+[16]
 ("C:\Users\Kevin\Documents\University of Pennsylvania\FALL 2015\STAT 471\Final Project\code\writeup\stat471_writeup.aux"
 ) ) 
 Here is how much of TeX's memory you used:
- 4006 strings out of 493921
- 58459 string characters out of 3144876
+ 4021 strings out of 493921
+ 58785 string characters out of 3144876
  125717 words of memory out of 3000000
- 7258 multiletter control sequences out of 15000+200000
+ 7270 multiletter control sequences out of 15000+200000
  7156 words of font info for 28 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  44i,9n,42p,1136b,300s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -490,9 +528,9 @@ Here is how much of TeX's memory you used:
 /type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Pr
 ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
 lic/amsfonts/cm/cmr9.pfb>
-Output written on stat471_writeup.pdf (12 pages, 1722164 bytes).
+Output written on stat471_writeup.pdf (16 pages, 2058547 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
+ 87 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 51 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 66 words of extra memory for PDF output out of 10000 (max. 10000000)
 
