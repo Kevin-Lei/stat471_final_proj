@@ -99,7 +99,8 @@ pairs(named_wards_data)
 ```
 
 ```{r first_blood=FALSE}
-first_blood_data = data.frame(data_stats$firstBlood)
+firstBlood = data_stats$firstBlood
+first_blood_data = data.frame(firstBlood)
 ```
 
 ```{r dragon/baron=FALSE}
@@ -134,6 +135,29 @@ plot(fit.cv_default, cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 new_lambda = exp(-3.8)
 fit.select = glmnet(x_mat, y_mat, family="binomial", alpha=1.0, lambda = new_lambda)
 fit.beta = coef(fit.select)
+```
+
+```{r train_test =FALSE}
+train_index = sample(3000, size = 2000)
+x_train = x_data[train_index, ]
+y_train = y_data[train_index, ]
+
+x_test = x_data[-train_index, ]
+y_test = y_data[-train_index, ]
+```
+
+```{r logistic regression=FALSE}
+lr_model = glm(y_train~Top_MPM_0_10+Top_MPM_10_20+Mid_MPM_10_20+ADC_MPM_0_10+ADC_MPM_10_20+jungle_camps_diff+supp_total_wards_placed_diff+firstBlood+dragon_1+dragon_2+baron_1+baron_2,family=binomial(logit), data=x_train)
+
+lr_model_reduced = glm(y_train~Top_MPM_10_20+Mid_MPM_10_20+ADC_MPM_10_20+jungle_camps_diff+supp_total_wards_placed_diff+firstBlood+dragon_1+dragon_2+baron_1+baron_2,family=binomial(logit), data=x_train)
+
+#likelihood ratio test:
+1-pchisq(lr_model_reduced$deviance-lr_model$deviance, lr_model_reduced$df.residual-lr_model$df.residual)
+
+lr_model.predict = predict(lr_model_reduced, x_test, type="response")
+lr_class_labels = (lr_model.predict > 0.5) + 0
+lr_model.roc=roc(y_test, lr_model.predict, plot=T)
+lr_model.roc$auc
 ```
 
 
