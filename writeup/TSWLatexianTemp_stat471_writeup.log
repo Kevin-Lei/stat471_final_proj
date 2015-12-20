@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.12)  20 DEC 2015 17:42
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.12)  20 DEC 2015 18:44
 entering extended mode
 **TSWLatexianTemp_stat471_writeup.tex
 
@@ -530,52 +530,59 @@ File: images/lr_simple.png Graphic file (type png)
  <use images/lr_simple.png>
 Package pdftex.def Info: images/lr_simple.png used on input line 323.
 (pdftex.def)             Requested size: 347.12354pt x 272.59628pt.
- [14 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_simple
-.png>]
-Missing character: There is no â in font cmr10!
-Missing character: There is no € in font cmr10!
-Missing character: There is no ™ in font cmr10!
-Missing character: There is no â in font cmr10!
-Missing character: There is no € in font cmr10!
-Missing character: There is no ™ in font cmr10!
 
-<images/lr_roc.png, id=72, 375.804pt x 214.401pt>
+Overfull \hbox (7.11172pt too wide) in paragraph at lines 333--333
+[] 
+ []
+
+[14 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_simple.
+png>]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+ <images/lr_roc.png, id=69, 375.804pt x 214.401pt>
 File: images/lr_roc.png Graphic file (type png)
  <use images/lr_roc.png>
-Package pdftex.def Info: images/lr_roc.png used on input line 358.
+Package pdftex.def Info: images/lr_roc.png used on input line 363.
 (pdftex.def)             Requested size: 242.98541pt x 138.62617pt.
  [15]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ™ in font cmr10!
 
-<images/rf_importance.png, id=76, 277.63725pt x 148.75575pt>
+<images/rf_importance.png, id=73, 277.63725pt x 148.75575pt>
 File: images/rf_importance.png Graphic file (type png)
  <use images/rf_importance.png>
-Package pdftex.def Info: images/rf_importance.png used on input line 375.
+Package pdftex.def Info: images/rf_importance.png used on input line 380.
 (pdftex.def)             Requested size: 173.56177pt x 92.9948pt.
 
-<images/rf_mce.png, id=77, 657.45625pt x 477.785pt>
+<images/rf_mce.png, id=74, 657.45625pt x 477.785pt>
 File: images/rf_mce.png Graphic file (type png)
  <use images/rf_mce.png>
-Package pdftex.def Info: images/rf_mce.png used on input line 383.
+Package pdftex.def Info: images/rf_mce.png used on input line 388.
 (pdftex.def)             Requested size: 347.12354pt x 252.26251pt.
+
+Underfull \vbox (badness 1112) has occurred while \output is active []
+
  [16 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/lr_roc.pn
-g> <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/rf_importan
-ce.png>]
-<images/rf_roc.png, id=81, 657.45625pt x 477.785pt>
+g>]
+<images/rf_roc.png, id=78, 657.45625pt x 477.785pt>
 File: images/rf_roc.png Graphic file (type png)
  <use images/rf_roc.png>
-Package pdftex.def Info: images/rf_roc.png used on input line 402.
+Package pdftex.def Info: images/rf_roc.png used on input line 407.
 (pdftex.def)             Requested size: 242.98541pt x 176.58084pt.
- [17 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/rf_mce.pn
-g>]
+ [17 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/rf_import
+ance.png> <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/rf_m
+ce.png>]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ™ in font cmr10!
  [18 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/rf_roc.pn
 g>]
-Overfull \hbox (9.07042pt too wide) in paragraph at lines 432--433
+Overfull \hbox (9.07042pt too wide) in paragraph at lines 437--438
 []\OT1/cmr/m/n/10 While LR is a para-met-ric model, ran-dom forests are com-pletely non-parametric.
  []
 
@@ -583,19 +590,19 @@ Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ™ in font cmr10!
 [19]
-Overfull \hbox (49.76619pt too wide) in paragraph at lines 466--467
+Overfull \hbox (49.76619pt too wide) in paragraph at lines 471--472
 []\OT1/cmr/m/n/10 http://www.nytimes.com/2014/08/26/technology/amazon-nears-a-deal-for-twitch.html 
  []
 
 
-Overfull \hbox (46.52068pt too wide) in paragraph at lines 470--471
+Overfull \hbox (46.52068pt too wide) in paragraph at lines 475--476
 \OT1/cmr/m/n/10 R code and Java pro-gram can be found at: https://github.com/Kevin-Lei/stat471[]final[]proj 
  []
 
-<images/pairwise_scatter.png, id=94, 439.04025pt x 303.534pt>
+<images/pairwise_scatter.png, id=91, 439.04025pt x 303.534pt>
 File: images/pairwise_scatter.png Graphic file (type png)
  <use images/pairwise_scatter.png>
-Package pdftex.def Info: images/pairwise_scatter.png used on input line 474.
+Package pdftex.def Info: images/pairwise_scatter.png used on input line 479.
 (pdftex.def)             Requested size: 347.12354pt x 239.98837pt.
  [20 <C:/Users/Kevin/Documents/University of Pennsylvania/FALL 2015/STAT 471/Final Project/code/writeup/images/pairwise_
 scatter.png>]
@@ -612,13 +619,11 @@ Here is how much of TeX's memory you used:
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
 mex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files (x86)/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><
-C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
-/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on TSWLatexianTemp_stat471_writeup.pdf (20 pages, 2477700 bytes).
+9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on TSWLatexianTemp_stat471_writeup.pdf (20 pages, 2453433 bytes).
 PDF statistics:
- 130 PDF objects out of 1000 (max. 8388607)
+ 118 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  91 words of extra memory for PDF output out of 10000 (max. 10000000)
 

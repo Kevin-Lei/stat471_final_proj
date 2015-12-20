@@ -324,8 +324,13 @@ We also removed any features from our dataset that were not useful. For example,
 		\caption{Simpler Model for Logistic Regression}
 	\end{figure}
 	
-	$\log(\frac{Pr[win]}{1 - Pr[win]}) = 0.27 + 0.27 * ($Top MPM 10-20$) + 0.26 * ($Mid MPM 10-20$) + 0.30 * ($ADC MPM 10-20$) + 0.012 * ($Jungle Camp$) + 0.025 ($Wards Placed by Supports$) + 0.37 * ($First Blood$) + 0.58 * ($Dragons Team 1$) - 0.62 * ($Dragons Team 2$) + 1.32 * ($Barons Team 1$) - 1.57 * ($Barons Team 2$)$
-	
+	\begin{align*}
+		\log \left( \frac{Pr[win]}{1 - Pr[win]} \right) =&\; 0.27 + 0.27 * (\text{Top MPM 10-20}) + 0.26 * (\text{Mid MPM 10-20}) \\
+		& + 0.30 * (\text{ADC MPM 10-20}) + 0.012 * (\text{Jungle Camp}) \\
+		& + 0.025 (\text{Wards Placed by Supports}) + 0.37 * (\text{First Blood}) \\
+		& + 0.58 * (\text{Dragons Team 1}) - 0.62 * (\text{Dragons Team 2}) \\
+		& + 1.32 * (\text{Barons Team 1}) - 1.57 * (\text{Barons Team 2})
+	\end{align*}
 	
 	Next we see that the number of jungle camps killed is also important. This is essentially a proxy for how well one jungler is doing compared to the other jungler. An increase in 1 total jungle camp killed correlates to an average increase in 0.0122 of the log odds ratio. This coefficient is much smaller than the MPM one, because that is a rate per minute, whereas this statistic is the total number killed.
 
@@ -368,7 +373,7 @@ We also removed any features from our dataset that were not useful. For example,
 	We then approached our problem using a non-parametric method, creating a Random Forests 
 model. More specifically, we used the training set created for the Logistic Regression model and limited the number of variables per tree to 10. 
 
-	We measured the importance of each variable by looking at each variable’s impact on the Gini coefficient. We found that the number of dragon and baron kills were the most significant in predicting a win which conforms with our prior knowledge that these types of kills provide significant advantages to the team.
+	We measured the importance of each variable by looking at each variable’s impact on the Gini coefficient (see Figure 15). We found that the number of dragon and baron kills were the most significant in predicting a win which conforms with our prior knowledge that these types of kills provide significant advantages to the team.
 	
 	\begin{figure}[!htb]
 		\centering
